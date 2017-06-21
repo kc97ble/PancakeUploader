@@ -21,9 +21,33 @@ app.get("/", function (req, res) {
     res.render("default");
 });
 
-function getShortName() { // FIXME
-    let x = Math.floor(Math.random()*100000000);
-    return ("00000000" + x).slice(-8);
+const baseShortNameList = ["sheep", "cat", "dog", "camel", "bear",
+    "cow", "horse", "pig", "giraffe", "goose", "cock", "hen", "fox",
+    "wolf", "elk", "mouse", "frog", "ant", "owl", "deer", "turtle",
+    "bee", "worm", "monkey", "rabbit", "hippo", "fly"];
+
+function randrange(n) {
+    return Math.floor(Math.random() * n);
+}
+
+function getShortName() {
+    
+    function db_count(obj) {
+        let result = 0;
+        db.count(obj, function (err, count) {
+            if (err) throw err;
+            result = count;
+        });
+        return result;
+    }
+    
+    let avg = Math.floor(db_count({}) / baseShortNameList.length);
+    for (;;) {
+        let x = baseShortNameList[randrange(baseShortNameList.length)];
+        let y = (randrange((avg+1)*100)).toString();
+        if (db_count({ shortname: x+y }) == 0)
+            return x+y;
+    }
 }
 
 // filename, originalname, datecreated, size
