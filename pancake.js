@@ -9,6 +9,7 @@ const upload = multer({ dest: __dirname + "/files/" });
 
 app.set("views", __dirname + "/views");
 app.set('view engine', 'pug');
+app.use(express.static(__dirname + "/static/"))
 
 const db = new nedb({ 
     filename: __dirname + "/pancake.db", 

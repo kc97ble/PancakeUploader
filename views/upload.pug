@@ -1,21 +1,35 @@
 html
   head
-    style(type="text/css").
-      html {
-        background-color: #AA6C39;
-      }
-      body {
-        background-color: #FFEFE1;
-        padding: 1em 1em;
-        border-radius: 1em;
-        margin: 2em auto;
-      }
-      @media screen and (min-width: 480px) {
-        body {
-          max-width: 50%;
-        }
-      }
+    title  Pancake Uploader 
+    link(rel='stylesheet', href='/css/page_style.css')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
   body
-    p Your file has been uploaded successfully.
-    p Short link: #{shortlink}
-    p Alternative link: #{link}
+    #banner
+      a#web_icon(href='/')
+        img(src='/images/page_icon.png', style='height: 100%; display: inline-block;')
+        img(src='/images/page_name.png', style='height: 100%; display: inline-block;')
+      table#tabs
+        tr(style='line-height: 100%;')
+          td#single_tab
+            a(href='/')  Home 
+          td#single_tab
+            a(href='/about.htm')  About 
+          td#single_tab
+            a(href='/contact.htm')  Contact 
+    #contents
+      div(style='height: 100%; width: 70%; float: left; margin-right: 2%;')
+        fieldset
+          img(src='/images/smiling_face.png')
+          h1(style='font-weight: bolder;')  SUCCESSFUL! 
+          p  Your file has been uploaded! 
+        fieldset
+          h1  Share your file now: 
+          #link_box
+            #shorten_link  #{shortlink} 
+          p#foot_note
+            | Upload other files 
+            a(href='/', style='font-size: 16px; color: blue;')  here 
+      div(style='width: 28%; float: left; position: relative;')
+        img(src='/images/page_icon.png', style='width: 100%;')
+        img(src='/images/page_name.png', style='width: 100%;')
+
