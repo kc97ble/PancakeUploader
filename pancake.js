@@ -53,20 +53,28 @@ function getShortName() {
 
 // filename, originalname, datecreated, size
 
-app.post("/upload", upload.single("file"), function (req, res) {
-    let doc = {
-        filename: req.file.filename,
-        shortname: getShortName(),
-        originalname: req.file.originalname,
-        datecreated: new Date(),
-        size: req.file.size,
-    };
-    db.insert(doc);
-    //db.find({}, function (err, docs){ console.log(docs); } );
+app.post("/upload", upload.array("file"), function (req, res) {
+    const shortname = getShortName();
+    const datecreated = new Date();
+    
+    for (const file of req.files) {
+        db.insert({
+            filename: file.filename,
+            shortname: shortname,
+            originalname: file.originalname,
+            datecreated: datecreated,
+            size: file.size,
+        });
+    }
+    
+    db.find({}, function(err, docs) {
+        console.log(docs);
+    });
+    
     let baselink = req.protocol + "://" + req.get("host");
     res.render("upload", {
-        link: baselink + "/file/" + doc.filename,
-        shortlink: baselink + "/" + doc.shortname,
+        //link: baselink + "/file/" + doc.filename,
+        shortlink: baselink + "/" + shortname,
     });
     res.end( );
 });
@@ -86,8 +94,7 @@ app.get("/:shortname", function (req, res) {
         if (docs.length==0)
             res.status(404).end();
         else
-            res.download(__dirname + "/files/" + docs[0].filename,
-                docs[0].originalname);
+            res.render("download", {files: docs});
     });
 });
 
