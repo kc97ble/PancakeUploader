@@ -1,105 +1,111 @@
-"use strict"
+"use strict";
+
+// Pancake Uploader
+//
+// URLs:
+// "/": home page
+// "/:shortname": show a folder
+// "/download/:filename": download a file
+// "upload": upload files
+
+const Promise = require("bluebird");
 const express = require("express");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const nedb = require("nedb");
-
 const app = express();
-const upload = multer({ dest: __dirname + "/files/" });
+const upload = multer({ dest: __dirname + "/uploaded/" });
 
-app.set("views", __dirname + "/views");
-app.set('view engine', 'pug');
-app.use(express.static(__dirname + "/static/"))
+//app.set("views", __dirname + "/views");
+app.set("views", __dirname + "/views.minimal");
+app.set("view engine", "pug");
+app.use(express.static(__dirname + "/static/"));
 
-const db = new nedb({ 
-    filename: __dirname + "/pancake.db", 
+const db = Promise.promisifyAll(new nedb({
+    filename: __dirname + "/pancake.db",
     autoload: true,
-});
+}));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get("/", function (req, res) {
-    res.render("default");
-});
+/// IMPLEMENTATION ///
 
-const baseShortNameList = ["sheep", "cat", "dog", "camel", "bear",
+const prefixList = ["sheep", "cat", "dog", "camel", "bear",
     "cow", "horse", "pig", "giraffe", "goose", "cock", "hen", "fox",
     "wolf", "elk", "mouse", "frog", "ant", "owl", "deer", "turtle",
     "bee", "worm", "monkey", "rabbit", "hippo", "fly"];
+
+function baselink(req) {
+    return req.protocol + "://" + req.get("host");
+}
 
 function randrange(n) {
     return Math.floor(Math.random() * n);
 }
 
-function getShortName() {
-    
-    function db_count(obj) {
-        let result = 0;
-        db.count(obj, function (err, count) {
-            if (err) throw err;
-            result = count;
-        });
-        return result;
-    }
-    
-    let avg = Math.floor(db_count({}) / baseShortNameList.length);
-    for (;;) {
-        let x = baseShortNameList[randrange(baseShortNameList.length)];
-        let y = (randrange((avg+1)*100)).toString();
-        if (db_count({ shortname: x+y }) == 0)
-            return x+y;
-    }
+function choice(arr) {
+    return arr[randrange(arr.length)];
 }
 
-// filename, originalname, datecreated, size
+function encodedoc(fn, sn, on, dc, sz) {
+    return {
+        filename: fn,
+        shortname: sn,
+        originalname: on,
+        datecreated: dc,
+        size: sz,
+    };
+}
 
-app.post("/upload", upload.array("file"), function (req, res) {
-    const shortname = getShortName();
-    const datecreated = new Date();
-    
-    for (const file of req.files) {
-        db.insert({
-            filename: file.filename,
-            shortname: shortname,
-            originalname: file.originalname,
-            datecreated: datecreated,
-            size: file.size,
-        });
-    }
-    
-    db.find({}, function(err, docs) {
-        console.log(docs);
-    });
-    
-    let baselink = req.protocol + "://" + req.get("host");
-    res.render("upload", {
-        //link: baselink + "/file/" + doc.filename,
-        shortlink: baselink + "/" + shortname,
-    });
-    res.end( );
+function getShortNameAsync() {
+    return db.countAsync({})
+    .then((count) => choice(prefixList) + count);
+}
+
+app.get("/", (req, res) => res.render("home"));
+
+app.post("/upload", upload.array("file"), (req, res) => {
+    let shortname;
+    getShortNameAsync()
+    .then((_shortname) => {
+        shortname = _shortname;
+        const datecreated = new Date();
+        const promises = [];
+        for (const file of req.files) {
+            const doc = encodedoc(file.filename, shortname,
+                file.originalname, datecreated, file.size);
+            const promise = db.insertAsync(doc);
+            promises.push(promise);
+        }
+        return Promise.all(promises);
+    })
+    .then(db.findAsync({}))
+//    .then(docs => console.log(docs))
+    .then(() => res.render("upload", 
+        { shortlink: baselink(req) + "/" + shortname }))
+    .catch((err) => console.error(err));
 });
 
-app.get("/file/:filename", function (req, res) {
-    db.find({ filename: req.params.filename }, function (err, docs){
-        if (docs.length==0)
-            res.status(404).end();
-        else
-            res.download(__dirname + "/files/" + docs[0].filename,
-                docs[0].originalname);
+app.get("/download/:filename", function (req, res) {
+    db.findAsync({ filename: req.params.filename })
+    .then((docs) => {
+        if (docs.length==0) return res.status(404).end();
+        res.download(__dirname + "/uploaded/" + docs[0].filename, 
+            docs[0].originalname);
     });
 });
 
 app.get("/:shortname", function (req, res) {
-    db.find({ shortname: req.params.shortname }, function (err, docs){
-        if (docs.length==0)
-            res.status(404).end();
-        else
-            res.render("download", {files: docs});
+    db.findAsync({ shortname: req.params.shortname })
+    .then((docs) => {
+        if (docs.length==0) return res.status(404).end();
+        res.render("open", {files: docs});
     });
 });
 
-const server = app.listen(8081, function () {
-   const host = server.address().address
-   const port = server.address().port
-   console.log("Example app listening at http://%s:%s", host, port)
+const server = app.listen(8081, () => {
+    const host = server.address().address;
+    const port = server.address().port;
+    console.log("Pancake Uploader is listening at " + 
+        "http://%s:%s", host, port);
 });
