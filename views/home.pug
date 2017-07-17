@@ -1,13 +1,14 @@
+doctype html
 html
   head
     title  Pancake Uploader 
-    link(rel='stylesheet', href='/css/page_style.css')
+    link(rel='stylesheet', href='css/page_style.css')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
   body
     #banner
       a#web_icon(href='/')
-        img(src='/images/page_icon.png', style='height: 100%; display: inline-block;')
-        img(src='/images/page_name.png', style='height: 100%; display: inline-block;')
+        img(src='images/page_icon.svg', style='height: 100%; display: inline-block;')
+        img(src='images/page_name.svg', style='height: 100%; display: inline-block;')
       table#tabs
         tr(style='line-height: 100%;')
           td#single_tab
@@ -17,18 +18,15 @@ html
           td#single_tab
             a(href='/contact.htm')  Contact 
     #contents
-      div(style='height: 100%; width: 70%; float: left; margin-right: 2%;')
+      div(style='height: 100%; width: 100%;')
         fieldset
           h1  Pancake Uploader 
           p  No account required! Fast, easy file sharing website. 
         fieldset
-          form(action='/upload', method='post', enctype='multipart/form-data')
+          form(action='upload', method='post', enctype='multipart/form-data')
             h1  Upload 
             br
-            input(type='file', name='file', multiple="")
+            input(type='file', name='file', multiple='')
             br
             input(type='submit')
-      div(style='width: 28%; float: left; position: relative;')
-        img(src='/images/page_icon.png', style='width: 100%;')
-        img(src='/images/page_name.png', style='width: 100%;')
 

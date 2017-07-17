@@ -16,8 +16,8 @@ const nedb = require("nedb");
 const app = express();
 const upload = multer({ dest: __dirname + "/uploaded/" });
 
-//app.set("views", __dirname + "/views");
-app.set("views", __dirname + "/views.minimal");
+app.set("views", __dirname + "/views");
+//app.set("views", __dirname + "/views.minimal");
 app.set("view engine", "pug");
 app.use(express.static(__dirname + "/static/"));
 
@@ -57,10 +57,23 @@ function encodedoc(fn, sn, on, dc, sz) {
     };
 }
 
-function getShortNameAsync() {
-    return db.countAsync({})
-    .then((count) => choice(prefixList) + count);
+function getShortName(next) {
+    db.count({}, function (err, count) {
+        if (err) { next(err, null); return; }
+        let avg = Math.floor(count / prefixList.length);
+        let result;
+        
+        function attempt(err, count) {
+            if (err) { next(err, null); return; }
+            if (!count) { next(null, result); return; }
+            result = choice(prefixList) + randrange((avg+1)*100);
+            db.count({ shortname: result }, attempt);
+        }
+        attempt(null, -1);
+    });
 }
+
+const getShortNameAsync = Promise.promisify(getShortName);
 
 app.get("/", (req, res) => res.render("home"));
 
@@ -79,7 +92,7 @@ app.post("/upload", upload.array("file"), (req, res) => {
         }
         return Promise.all(promises);
     })
-    .then(db.findAsync({}))
+//    .then(() => db.findAsync({}))
 //    .then(docs => console.log(docs))
     .then(() => res.render("upload", 
         { shortlink: baselink(req) + "/" + shortname }))
@@ -89,7 +102,8 @@ app.post("/upload", upload.array("file"), (req, res) => {
 app.get("/download/:filename", function (req, res) {
     db.findAsync({ filename: req.params.filename })
     .then((docs) => {
-        if (docs.length==0) return res.status(404).end();
+        if (docs.length==0)
+            return res.status(404).sendfile(__dirname + "/static/not_found.htm");
         res.download(__dirname + "/uploaded/" + docs[0].filename, 
             docs[0].originalname);
     });
@@ -98,7 +112,8 @@ app.get("/download/:filename", function (req, res) {
 app.get("/:shortname", function (req, res) {
     db.findAsync({ shortname: req.params.shortname })
     .then((docs) => {
-        if (docs.length==0) return res.status(404).end();
+        if (docs.length==0)
+            return res.status(404).sendFile(__dirname + "/static/not_found.htm");
         res.render("open", {files: docs});
     });
 });
