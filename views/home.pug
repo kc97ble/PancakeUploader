@@ -31,28 +31,28 @@ html
             input(type='submit', value='Submit')
     script.
       function files_received() {
-			var selected_files = document.getElementById("fileID");
-			var list = document.getElementById("files_list");
-			list.style.visibility = "visible";
+        var selected_files = document.getElementById("fileID");
+        var list = document.getElementById("files_list");
+        list.style.visibility = "visible";
 
-			if (selected_files.files.length == 1) {
-				list.innerHTML = "<h3>File selected</h3>";
-			} else {
-				list.innerHTML = "<h3>Files selected</h3>";
-			}
+        if (selected_files.files.length == 1) {
+          list.innerHTML = "<h3>File selected</h3>";
+        } else {
+          list.innerHTML = "<h3>Files selected</h3>";
+        }
 
-			for (var i = 0; i < selected_files.files.length; i++) {
-				var file_info = "";
-				var cur_file = selected_files.files[i];
-				file_info += cur_file.name;
-				var new_file = document.createElement('li');
-				new_file.appendChild(document.createTextNode(file_info));
-				list.appendChild(new_file);
-			}
-			if (selected_files.files.length == 1) {
-				document.getElementById("fake_input_file").innerHTML = selected_files.files.length + " file selected!";
-			} else {
-				document.getElementById("fake_input_file").innerHTML = selected_files.files.length + " files selected!";
-			}
-		}
+        for (var i = 0; i < selected_files.files.length; i++) {
+          var file_info = "";
+          var cur_file = selected_files.files[i];
+          file_info += cur_file.name;
+          var new_file = document.createElement('li');
+          new_file.appendChild(document.createTextNode(file_info));
+          list.appendChild(new_file);
+        }
+        if (selected_files.files.length == 1) {
+          document.getElementById("fake_input_file").innerHTML = selected_files.files.length + " file selected!";
+        } else {
+          document.getElementById("fake_input_file").innerHTML = selected_files.files.length + " files selected!";
+        }
+      }
 
