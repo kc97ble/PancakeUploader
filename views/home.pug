@@ -20,13 +20,39 @@ html
       div(style='height: 100%; width: 100%;')
         fieldset
           h1  Pancake Uploader 
-          p
-            b  No account required! Fast, easy file sharing website. 
+          p  No account required! Fast, easy file sharing website. 
           br
           br
-          form(action='upload', method='post', enctype='multipart/form-data')
+          form(action='/upload', method='post', enctype='multipart/form-data')
             h1  Upload 
-            #fake_input_file(href='#', onclick="document.getElementById('fileID').click(); return false;")  Choose your file 
-            input#fileID(type='file', name='file', multiple='')
+            #fake_input_file(href='#', multiple='', size='100', onclick="document.getElementById('fileID').click(); return false;")  Choose your files 
+            input#fileID(type='file', name='file', multiple='', size='50', onchange='files_received()')
+            ol#files_list
             input(type='submit', value='Submit')
+    script.
+      function files_received() {
+			var selected_files = document.getElementById("fileID");
+			var list = document.getElementById("files_list");
+			list.style.visibility = "visible";
+
+			if (selected_files.files.length == 1) {
+				list.innerHTML = "<h3>File selected</h3>";
+			} else {
+				list.innerHTML = "<h3>Files selected</h3>";
+			}
+
+			for (var i = 0; i < selected_files.files.length; i++) {
+				var file_info = "";
+				var cur_file = selected_files.files[i];
+				file_info += cur_file.name;
+				var new_file = document.createElement('li');
+				new_file.appendChild(document.createTextNode(file_info));
+				list.appendChild(new_file);
+			}
+			if (selected_files.files.length == 1) {
+				document.getElementById("fake_input_file").innerHTML = selected_files.files.length + " file selected!";
+			} else {
+				document.getElementById("fake_input_file").innerHTML = selected_files.files.length + " files selected!";
+			}
+		}
 
