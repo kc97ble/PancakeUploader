@@ -1,14 +1,13 @@
-doctype html
 html
   head
     title  Pancake Uploader 
-    link(rel='stylesheet', href='css/page_style.css')
+    link(rel='stylesheet', href='/css/page_style.css')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
   body
     #banner
       a#web_icon(href='/')
-        img(src='images/page_icon.svg', style='height: 100%; display: inline-block;')
-        img(src='images/page_name.svg', style='height: 100%; display: inline-block;')
+        img(src='/images/page_icon.svg', style='height: 100%; display: inline-block;')
+        img(src='/images/page_name.svg', style='height: 100%; display: inline-block;')
       table#tabs
         tr(style='line-height: 100%;')
           td#single_tab
@@ -21,12 +20,13 @@ html
       div(style='height: 100%; width: 100%;')
         fieldset
           h1  Pancake Uploader 
-          p  No account required! Fast, easy file sharing website. 
-        fieldset
+          p
+            b  No account required! Fast, easy file sharing website. 
+          br
+          br
           form(action='upload', method='post', enctype='multipart/form-data')
             h1  Upload 
-            br
-            input(type='file', name='file', multiple='')
-            br
-            input(type='submit')
+            #fake_input_file(href='#', onclick="document.getElementById('fileID').click(); return false;")  Choose your file 
+            input#fileID(type='file', name='file', multiple='')
+            input(type='submit', value='Submit')
 

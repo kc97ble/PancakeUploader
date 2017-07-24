@@ -17,8 +17,17 @@ const app = express();
 const upload = multer({ dest: __dirname + "/uploaded/" });
 
 app.set("views", __dirname + "/views");
-//app.set("views", __dirname + "/views.minimal");
+//app.set("views", __dirname + "/views_minimal");
 app.set("view engine", "pug");
+
+app.use((req, res, next) =>{
+    if (req.socket.localPort == 8082)
+        app.set("views", __dirname + "/views_minimal");
+    else
+        app.set("views", __dirname + "/views");
+    next();
+});
+
 app.use(express.static(__dirname + "/static/"));
 
 const db = Promise.promisifyAll(new nedb({
@@ -122,5 +131,12 @@ const server = app.listen(8081, () => {
     const host = server.address().address;
     const port = server.address().port;
     console.log("Pancake Uploader is listening at " + 
+        "http://%s:%s", host, port);
+});
+
+const server8082 = app.listen(8082, () => {
+    const host = server8082.address().address;
+    const port = server8082.address().port;
+    console.log("Pancake Uploader is also listening at " + 
         "http://%s:%s", host, port);
 });

@@ -5,7 +5,12 @@ body {
 	margin: 0;
 }
 
-a {
+td > a {
+	display: flex;
+	height: 100%;
+	align-items: center;
+	padding-left: 8px;
+	padding-right: 8px;
 	text-decoration: none !important;
 	font-family: sans-serif;
 	font-size: 24px;
@@ -23,8 +28,8 @@ fieldset {
 	margin-top: 8px;
 	margin-bottom: 16px;
 	padding-top: 8px;
-	padding-left: 24px;
-	padding-right: 24px;
+	padding-left: 48px;
+	padding-right: 48px;
 	padding-bottom: 16px;
 	border-radius: 4px;
 	border-style: solid;
@@ -55,7 +60,7 @@ h1 {
 	margin-top: 0px;
 	margin-bottom: 8px;	
 	position: relative;
-	box-shadow: 0px 0px 1px #0D47A1;
+	box-shadow: 0px 4px 2px #607D8B;
 	background-color: #3B5998;
 }
 
@@ -74,8 +79,6 @@ h1 {
 
 #single_tab {
 	height: 100%;
-	text-align: center;
-	padding: 16px;
 	border-radius: 8px;
 }
 
@@ -86,8 +89,8 @@ h1 {
 #contents {
 	min-height: 80%;
 	padding: 4px;
-	margin-left: 10%;
-	margin-right: 10%;
+	margin-left: 15%;
+	margin-right: 15%;
 	margin-bottom: 16px;
 	text-align: center;
 	position: relative;
@@ -102,11 +105,15 @@ h1 {
 	width: 50%; 
 	height: 24px;
 	padding: 16px;
-	background-color: white;
+	background-color: #F5F5F5;
 	display: inline-block;
 	border-color: black; 
 	border-style: solid; 
 	border-width: 2px;
+}
+
+#link_box:hover {
+	background-color: #EEEEEE;
 }
 
 #shorten_link {
@@ -114,42 +121,53 @@ h1 {
 	font-size: 24px;
 }
 
-#vertical_line {
-	max-height: 10px;
-	width: 1px;
-	padding: 0px;
-	background-color: black;
+#contact_icon {
+	font-size:48px; 
+	color:#3B5998;
+}
+
+#fake_input_file {
+	height: 256px;
+	margin-left: 5%;
+	margin-right: 5%;
+	background-color: #F5F5F5;
+	font-family: sans-serif;
+	padding-left: 32px;
+	padding-right: 32px;
+	margin-top: 16px;
+	border-radius: 32px;
+	font-size: 24px;
+	vertical-align: middle;
+	border-style: dashed;
+	line-height: 256px;
+	text-align: center;
+}
+
+#fake_input_file:hover {
+	background-color: #EEEEEE;
 }
 
 input[type=file] {
-	height: 256px;
-	width: 80%;
-	background-color: rgb(237, 237, 237);
-	font-family: sans-serif;
-	padding: 16px;
-	font-size: 24px;
-	border-style: ridge;
-}
-
-input[type=file]:hover {
-	background-color: rgb(229, 229, 229);
-	border-style: groove;
+	position: absolute;
+	top: 0;
+	visibility: hidden;
 }
 
 input[type=submit] {
 	font-family: sans-serif;
-	background-color: rgb(237, 237, 237);
-	margin-top: 8px;
-	padding: 12px;
+	background-color: #F5F5F5;
+	margin-top: 16px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 32px;
+	padding-right: 32px;
 	font-size: 24px;
-	border-radius: 2px;
+	border-radius: 24px;
 	border-width: 1px;
 	border-color: black;
-	border-style: ridge;
+	border-style: solid;
 }
 
 input[type=submit]:hover {
-	background-color: rgb(229, 229, 229);
-	border-style: groove;
-	font-weight: bold;
+	background-color: #E0E0E0;
 }

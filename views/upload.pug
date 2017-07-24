@@ -1,13 +1,13 @@
 html
   head
     title  Pancake Uploader 
-    link(rel='stylesheet', href='css/page_style.css')
+    link(rel='stylesheet', href='/css/page_style.css')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
   body
     #banner
-      a#web_icon(href='main.htm')
-        img(src='images/page_icon.svg', style='height: 100%; display: inline-block;')
-        img(src='images/page_name.svg', style='height: 100%; display: inline-block;')
+      a#web_icon(href='/')
+        img(src='/images/page_icon.svg', style='height: 100%; display: inline-block;')
+        img(src='/images/page_name.svg', style='height: 100%; display: inline-block;')
       table#tabs
         tr(style='line-height: 100%;')
           td#single_tab
@@ -19,14 +19,14 @@ html
     #contents
       div(style='height: 100%; width: 100%;')
         fieldset
-          img(src='images/smiling_face.svg')
+          img(src='/images/smiling_face.svg')
           h1(style='font-weight: bolder;')  SUCCESSFUL! 
           p  Your file has been uploaded! 
         fieldset
           h1  Share your file now: 
           #link_box
             #shorten_link
-              a(href=shortlink, style='color: black;') #{shortlink}
+              a(href=shortlink) #{shortlink}
           p#foot_note
             | Upload other files 
             a(href='/', style='font-size: 16px; color: blue;')  here 
