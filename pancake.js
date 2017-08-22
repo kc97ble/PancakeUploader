@@ -45,7 +45,12 @@ const prefixList = ["sheep", "cat", "dog", "camel", "bear",
     "bee", "worm", "monkey", "rabbit", "hippo", "fly"];
 
 function baselink(req) {
-    return req.protocol + "://" + req.get("host");
+    let host = req.get("host");
+    if (host=="localhost:8081")
+        host = "pancakeuploader.xyz";
+    if (host=="localhost:8082")
+        host = "m.pancakeuploader.xyz";
+    return req.protocol + "://" + host;
 }
 
 function randrange(n) {
